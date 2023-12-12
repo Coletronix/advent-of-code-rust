@@ -31,7 +31,7 @@ fn parse_line(line: &str) -> u32 {
             }
         });
     
-    // this is ok because solution will always have at least one number
+    // this is ok because input text will always have at least one number
     let first = numbers_iter.next().unwrap();
     let last = numbers_iter.next_back().unwrap_or(first);
     first * 10 + last

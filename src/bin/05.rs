@@ -40,7 +40,7 @@ impl MapChain {
 
     fn map(&self, source: u32) -> u32 {
         let mut result = source;
-        for map in self.map_chain {
+        for map in self.map_chain.iter() {
             result = map.map(result);
         }
         result

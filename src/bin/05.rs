@@ -39,7 +39,7 @@ impl MapChain {
     }
 
     fn map(&self, source: u32) -> u32 {
-        let mut result = *source;
+        let mut result = source;
         for map in self.map_chain {
             result = map.map(result);
         }
@@ -88,7 +88,6 @@ pub fn part_one(input: &str) -> Option<u32> {
     }
 
     // parse groups into ThingMaps
-    let chain = MapChain
     let map_chain = groups.iter().map(|group| {
         let mut group_lines_iter = group.iter();
         // first line contains the name of the map

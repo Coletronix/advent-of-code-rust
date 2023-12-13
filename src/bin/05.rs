@@ -162,7 +162,7 @@ pub fn part_two(input: &str) -> Option<u32> {
     }
 
     // parse groups into ThingMaps
-    let chain = MapChain::new();
+    let mut chain = MapChain::new();
     chain.map_chain = groups.iter().map(|group| {
         let mut group_lines_iter = group.iter();
         // first line contains the name of the map

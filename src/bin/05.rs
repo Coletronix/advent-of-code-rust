@@ -46,14 +46,13 @@ impl MapChain {
         result
     }
 
-    // fn rev_map(&self, dest: u32) -> u32 {
-    //     for (dest_start, source_start, length) in &self.map_ranges {
-    //         if dest >= *dest_start && dest < *dest_start + *length {
-    //             return source_start + (dest - dest_start);
-    //         }
-    //     }
-    //     dest
-    // }
+    fn rev_map(&self, dest: u32) -> u32 {
+        let mut result = dest;
+        for map in self.map_chain.iter() {
+            result = map.rev_map(result);
+        }
+        result
+    }
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
@@ -196,7 +195,9 @@ pub fn part_two(input: &str) -> Option<u32> {
     //     result
     // });
     // Some(results.min().unwrap())
-    let batch_size = seeds.len()/32; // adjust this based on your requirements and experimentation
+    println!("Seeds len: {}", seeds.len());
+    let batch_size = (seeds.len()/32).max(1); // adjust this based on your requirements and experimentation
+    println!("batch size: {}", batch_size);
     let seeds_arc = Arc::new(seeds);
     let results = Mutex::new(Vec::new());
 

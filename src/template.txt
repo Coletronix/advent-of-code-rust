@@ -1,12 +1,12 @@
 advent_of_code::solution!(%DAY_NUMBER%);
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let lines = input.lines().collect::<Vec<&str>>();
+    let _lines = input.lines().collect::<Vec<&str>>();
     None
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    let lines = input.lines().collect::<Vec<&str>>();
+    let _lines = input.lines().collect::<Vec<&str>>();
     None
 }
 

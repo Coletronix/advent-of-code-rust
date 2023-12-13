@@ -16,6 +16,44 @@ impl ThingMap {
         }
         source
     }
+
+    fn rev_map(&self, dest: u32) -> u32 {
+        for (dest_start, source_start, length) in &self.map_ranges {
+            if dest >= *dest_start && dest < *dest_start + *length {
+                return source_start + (dest - dest_start);
+            }
+        }
+        dest
+    }
+}
+
+struct MapChain {
+    map_chain: Vec<ThingMap>,
+}
+
+impl MapChain {
+    fn new() -> Self {
+        Self {
+            map_chain: Vec::new()
+        }
+    }
+
+    fn map(&self, source: u32) -> u32 {
+        let mut result = *source;
+        for map in self.map_chain {
+            result = map.map(result);
+        }
+        result
+    }
+
+    // fn rev_map(&self, dest: u32) -> u32 {
+    //     for (dest_start, source_start, length) in &self.map_ranges {
+    //         if dest >= *dest_start && dest < *dest_start + *length {
+    //             return source_start + (dest - dest_start);
+    //         }
+    //     }
+    //     dest
+    // }
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
@@ -50,6 +88,7 @@ pub fn part_one(input: &str) -> Option<u32> {
     }
 
     // parse groups into ThingMaps
+    let chain = MapChain
     let map_chain = groups.iter().map(|group| {
         let mut group_lines_iter = group.iter();
         // first line contains the name of the map
@@ -125,7 +164,8 @@ pub fn part_two(input: &str) -> Option<u32> {
     }
 
     // parse groups into ThingMaps
-    let map_chain = groups.iter().map(|group| {
+    let chain = MapChain::new();
+    chain.map_chain = groups.iter().map(|group| {
         let mut group_lines_iter = group.iter();
         // first line contains the name of the map
         let _map_name_iter = group_lines_iter.next();
@@ -165,11 +205,7 @@ pub fn part_two(input: &str) -> Option<u32> {
     seeds_arc.par_chunks(batch_size).for_each(|batch| {
         let mut local_results = Vec::new();
         for seed in batch {
-            let mut result = *seed;
-            for map in &map_chain {
-                result = map.map(result);
-            }
-            local_results.push(result);
+            local_results.push(chain.map(*seed));
         }
         let mut global_results = results.lock().unwrap();
         global_results.extend(local_results);

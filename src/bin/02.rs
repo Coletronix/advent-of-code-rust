@@ -6,17 +6,24 @@ enum Cube {
     Blue(u32),
 }
 
-
 pub fn part_one(input: &str) -> Option<u32> {
     let max_red = 12;
     let max_green = 13;
     let max_blue = 14;
-    
+
     let lines = input.lines().collect::<Vec<&str>>();
 
     let valid_ids = lines.iter().filter_map(|line| {
         let mut parts = line.split(':');
-        let game_id = parts.next().unwrap().trim().split(' ').last().unwrap().parse::<u32>().unwrap();
+        let game_id = parts
+            .next()
+            .unwrap()
+            .trim()
+            .split(' ')
+            .last()
+            .unwrap()
+            .parse::<u32>()
+            .unwrap();
         let games_raw = parts.next().unwrap().trim().split(';');
         let num_raw_games = games_raw.clone().count();
         let valid_games = games_raw.filter_map(|game| {
@@ -65,19 +72,23 @@ pub fn part_two(input: &str) -> Option<u32> {
         let _game_id = parts.next();
         let games_raw = parts.next().unwrap().trim().split(';');
         let valid_games = games_raw.map(|game| {
-            game.trim().split(',').map(|cube| {
-                let mut parts = cube.trim().split(' ');
-                let count = parts.next().unwrap().parse::<u32>().unwrap();
-                let color = parts.next().unwrap();
-                (count, color)
-            }).fold((0, 0, 0), |(red, green, blue), (count, color)| {
-                match color {
-                    "red" => (red + count, green, blue),
-                    "green" => (red, green + count, blue),
-                    "blue" => (red, green, blue + count),
-                    _ => panic!("invalid color"),
-                }
-            })
+            game.trim()
+                .split(',')
+                .map(|cube| {
+                    let mut parts = cube.trim().split(' ');
+                    let count = parts.next().unwrap().parse::<u32>().unwrap();
+                    let color = parts.next().unwrap();
+                    (count, color)
+                })
+                .fold(
+                    (0, 0, 0),
+                    |(red, green, blue), (count, color)| match color {
+                        "red" => (red + count, green, blue),
+                        "green" => (red, green + count, blue),
+                        "blue" => (red, green, blue + count),
+                        _ => panic!("invalid color"),
+                    },
+                )
         });
         let (mut max_red, mut max_green, mut max_blue) = (0, 0, 0);
 

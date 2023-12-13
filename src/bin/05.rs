@@ -34,7 +34,7 @@ struct MapChain {
 impl MapChain {
     fn new() -> Self {
         Self {
-            map_chain: Vec::new()
+            map_chain: Vec::new(),
         }
     }
 
@@ -45,14 +45,6 @@ impl MapChain {
         }
         result
     }
-
-    // fn rev_map(&self, dest: u64) -> u64 {
-    //     let mut result = dest;
-    //     for map in self.map_chain.iter().rev() {
-    //         result = map.rev_map(result);
-    //     }
-    //     result
-    // }
 }
 
 pub fn part_one(input: &str) -> Option<u64> {
@@ -61,7 +53,9 @@ pub fn part_one(input: &str) -> Option<u64> {
 
     // first line contains seeds and is formatted as follows:
     // seeds: 79 14 55 13
-    let seeds = lines_iter.next().unwrap()
+    let seeds = lines_iter
+        .next()
+        .unwrap()
         .split_whitespace()
         .skip(1)
         .map(|s| s.parse::<u64>().unwrap())
@@ -87,29 +81,32 @@ pub fn part_one(input: &str) -> Option<u64> {
     }
 
     // parse groups into ThingMaps
-    let map_chain = groups.iter().map(|group| {
-        let mut group_lines_iter = group.iter();
-        // first line contains the name of the map
-        let _map_name_iter = group_lines_iter.next();
-        // let map_from = map_name_iter.next().unwrap();
-        // let map_to = map_name_iter.last().unwrap();
+    let map_chain = groups
+        .iter()
+        .map(|group| {
+            let mut group_lines_iter = group.iter();
+            // first line contains the name of the map
+            let _map_name_iter = group_lines_iter.next();
+            // let map_from = map_name_iter.next().unwrap();
+            // let map_to = map_name_iter.last().unwrap();
 
-        // create ThingMap
-        let mut map = ThingMap {
-            map_ranges: Vec::new(),
-        };
+            // create ThingMap
+            let mut map = ThingMap {
+                map_ranges: Vec::new(),
+            };
 
-        // each remaining line contains a mapping
-        for line in group_lines_iter {
-            let mut line_iter = line.split_whitespace();
-            let dest_start = line_iter.next().unwrap().parse::<u64>().unwrap();
-            let source_start = line_iter.next().unwrap().parse::<u64>().unwrap();
-            let length = line_iter.next().unwrap().parse::<u64>().unwrap();
-            map.map_ranges.push((dest_start, source_start, length));
-        }
+            // each remaining line contains a mapping
+            for line in group_lines_iter {
+                let mut line_iter = line.split_whitespace();
+                let dest_start = line_iter.next().unwrap().parse::<u64>().unwrap();
+                let source_start = line_iter.next().unwrap().parse::<u64>().unwrap();
+                let length = line_iter.next().unwrap().parse::<u64>().unwrap();
+                map.map_ranges.push((dest_start, source_start, length));
+            }
 
-        map
-    }).collect::<Vec<ThingMap>>();
+            map
+        })
+        .collect::<Vec<ThingMap>>();
 
     // apply maps to seeds
     let results = seeds.iter().map(|seed| {
@@ -130,7 +127,9 @@ pub fn part_two(input: &str) -> Option<u64> {
 
     // first line contains seeds and is formatted as follows:
     // seeds: 79 14 55 13
-    let seed_ranges = lines_iter.next().unwrap()
+    let seed_ranges = lines_iter
+        .next()
+        .unwrap()
         .split_whitespace()
         .skip(1)
         .map(|s| s.parse::<u64>().unwrap())
@@ -140,7 +139,8 @@ pub fn part_two(input: &str) -> Option<u64> {
         .map(|chunk| {
             assert!(chunk.len() == 2);
             chunk[0]..(chunk[0] + chunk[1])
-        }).collect::<Vec<Range<u64>>>();
+        })
+        .collect::<Vec<Range<u64>>>();
 
     // skip next line as it is always empty
     lines_iter.next();
@@ -163,27 +163,30 @@ pub fn part_two(input: &str) -> Option<u64> {
 
     // parse groups into ThingMaps
     let mut chain = MapChain::new();
-    chain.map_chain = groups.iter().map(|group| {
-        let mut group_lines_iter = group.iter();
-        // first line contains the name of the map
-        let _map_name_iter = group_lines_iter.next();
+    chain.map_chain = groups
+        .iter()
+        .map(|group| {
+            let mut group_lines_iter = group.iter();
+            // first line contains the name of the map
+            let _map_name_iter = group_lines_iter.next();
 
-        // create ThingMap
-        let mut map = ThingMap {
-            map_ranges: Vec::new(),
-        };
+            // create ThingMap
+            let mut map = ThingMap {
+                map_ranges: Vec::new(),
+            };
 
-        // each remaining line contains a mapping
-        for line in group_lines_iter {
-            let mut line_iter = line.split_whitespace();
-            let dest_start = line_iter.next().unwrap().parse::<u64>().unwrap();
-            let source_start = line_iter.next().unwrap().parse::<u64>().unwrap();
-            let length = line_iter.next().unwrap().parse::<u64>().unwrap();
-            map.map_ranges.push((dest_start, source_start, length));
-        }
+            // each remaining line contains a mapping
+            for line in group_lines_iter {
+                let mut line_iter = line.split_whitespace();
+                let dest_start = line_iter.next().unwrap().parse::<u64>().unwrap();
+                let source_start = line_iter.next().unwrap().parse::<u64>().unwrap();
+                let length = line_iter.next().unwrap().parse::<u64>().unwrap();
+                map.map_ranges.push((dest_start, source_start, length));
+            }
 
-        map
-    }).collect::<Vec<ThingMap>>();
+            map
+        })
+        .collect::<Vec<ThingMap>>();
 
     // work out interesting points in the input seed range that cause the output to have a drastic change
     // by traversing backwards through the chain map
@@ -210,12 +213,13 @@ pub fn part_two(input: &str) -> Option<u64> {
     interesting_points.dedup();
 
     // duplicate array, and sort it by minimum seed value
-    let mut interesting_points_min = interesting_points.clone().iter().map(|point| {
-        (*point, chain.map(*point))
-    }).collect::<Vec<(u64, u64)>>();
-    interesting_points_min.sort_by(|(_, location1), (_, location2)| {
-        location1.partial_cmp(location2).unwrap()
-    });
+    let mut interesting_points_min = interesting_points
+        .clone()
+        .iter()
+        .map(|point| (*point, chain.map(*point)))
+        .collect::<Vec<(u64, u64)>>();
+    interesting_points_min
+        .sort_by(|(_, location1), (_, location2)| location1.partial_cmp(location2).unwrap());
 
     // fancy stuff
     for (point, location) in &interesting_points_min {
@@ -225,13 +229,13 @@ pub fn part_two(input: &str) -> Option<u64> {
             return Some(*location);
         }
         // check if there are any seed ranges starting between the current interesting point and the next
-        let current_point_index = interesting_points.iter().position(|&x| x == *point).unwrap(); // guaranteed to be in this list
-        let next_point = interesting_points[(current_point_index+1) as usize]; // TODO: this can panic
+        let current_point_index = &interesting_points.binary_search(point).unwrap();
+        let next_point = interesting_points[current_point_index + 1]; // TODO: this can panic
         let range_of_interest = *point..next_point;
         for seed_range in seed_ranges.clone() {
             if range_of_interest.contains(&seed_range.start) {
                 // the start must map to the minimum then
-                return Some(chain.map(seed_range.start))
+                return Some(chain.map(seed_range.start));
             }
         }
     }

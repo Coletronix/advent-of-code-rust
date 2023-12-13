@@ -128,7 +128,6 @@ pub fn part_one(input: &str) -> Option<u32> {
 pub fn part_two(input: &str) -> Option<u32> {
     let lines = input.lines().collect::<Vec<&str>>();
     let mut lines_iter = lines.iter();
-    return None;
     
     // first line contains seeds and is formatted as follows:
     // seeds: 79 14 55 13

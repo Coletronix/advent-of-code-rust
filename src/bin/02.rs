@@ -92,8 +92,7 @@ pub fn part_two(input: &str) -> Option<u32> {
                 max_blue = blue;
             }
         }
-        let power = max_red * max_green * max_blue;
-        power
+        max_red * max_green * max_blue // power
     });
     Some(valid_powers.sum())
 }

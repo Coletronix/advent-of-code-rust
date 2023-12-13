@@ -7,8 +7,8 @@ pub fn part_one(input: &str) -> Option<u32> {
         let mut parts = line.split(": ");
         let _card_ident = parts.next().unwrap();
         let mut numbers = parts.next().unwrap().split(" | ");
-        let winning_numbers = numbers.next().unwrap().split(" ").filter(|n| !n.is_empty()).map(|n| n.trim().parse::<u32>().unwrap());
-        let drawn_numbers = numbers.next().unwrap().split(" ").filter(|n| !n.is_empty()).map(|n| n.trim().parse::<u32>().unwrap());
+        let winning_numbers = numbers.next().unwrap().split(' ').filter(|n| !n.is_empty()).map(|n| n.trim().parse::<u32>().unwrap());
+        let drawn_numbers = numbers.next().unwrap().split(' ').filter(|n| !n.is_empty()).map(|n| n.trim().parse::<u32>().unwrap());
 
         // construct a bitset of winning numbers and drawn numbers stored in a u128
         let mut winning_numbers_bitset = 0u128;
@@ -39,10 +39,10 @@ pub fn part_two(input: &str) -> Option<u32> {
     
     for line in lines.iter() {
         let mut parts = line.split(": ");
-        let card_num = parts.next().unwrap().split(" ").last().unwrap().parse::<u32>().unwrap();
+        let card_num = parts.next().unwrap().split(' ').last().unwrap().parse::<u32>().unwrap();
         let mut numbers = parts.next().unwrap().split(" | ");
-        let winning_numbers = numbers.next().unwrap().split(" ").filter(|n| !n.is_empty()).map(|n| n.trim().parse::<u32>().unwrap());
-        let drawn_numbers = numbers.next().unwrap().split(" ").filter(|n| !n.is_empty()).map(|n| n.trim().parse::<u32>().unwrap());
+        let winning_numbers = numbers.next().unwrap().split_whitespace().map(|n| n.trim().parse::<u32>().unwrap());
+        let drawn_numbers = numbers.next().unwrap().split_whitespace().map(|n| n.trim().parse::<u32>().unwrap());
 
         // construct a bitset of winning numbers and drawn numbers stored in a u128
         let mut winning_numbers_bitset = 0u128;

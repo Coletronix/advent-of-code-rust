@@ -11,7 +11,7 @@ struct PartNumber {
 }
 
 impl PartNumber {
-    fn parse_to_num(&self, lines: &Vec<&str>) -> u32 {
+    fn parse_to_num(&self, lines: &[&str]) -> u32 {
         // we already know the position of it, now just get the string slice and parse it
         let num_str = lines[self.row as usize].chars().skip(self.left_pos as usize).take((self.right_pos - self.left_pos + 1) as usize).collect::<String>();
         let thing = num_str.parse::<u32>();
@@ -26,14 +26,14 @@ impl PartNumber {
 }
 
 // parse out all numbers (concecutive digits) and their positions
-fn parse_out_part_nums(lines: &Vec<&str>) -> Vec<PartNumber> {
+fn parse_out_part_nums(lines: &[&str]) -> Vec<PartNumber> {
     let mut part_nums: Vec<PartNumber> = Vec::new();
     for (row, line) in lines.iter().enumerate() {
         let mut left_pos_set = false;
         let mut left_pos = 0;
         let mut right_pos = 0;
         for (col, c) in line.chars().enumerate() {
-            if c.is_digit(10) {
+            if c.is_ascii_digit() {
                 right_pos = col;
                 if !left_pos_set {
                     left_pos = col;
@@ -122,13 +122,13 @@ struct Gear<'a> {
 }
 
 impl Gear<'_> {
-    fn get_gear_ratio(&self, lines: &Vec<&str>) -> Option<u32> {
+    fn get_gear_ratio(&self, lines: &[&str]) -> Option<u32> {
         // none if not exactly 2 parts adjacent. Otherwise product of two parts
         if self.parts_adjacent.len() != 2 {
             return None
         }
-        let part1 = self.parts_adjacent[0].parse_to_num(&lines);
-        let part2 = self.parts_adjacent[1].parse_to_num(&lines);
+        let part1 = self.parts_adjacent[0].parse_to_num(lines);
+        let part2 = self.parts_adjacent[1].parse_to_num(lines);
         Some(part1 * part2)
     }
 }

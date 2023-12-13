@@ -26,12 +26,8 @@ pub fn part_one(input: &str) -> Option<u32> {
         let b = time;
         let c = -distance;
         let discriminant = b * b - 4.0 * a * c;
-        // if discriminant is negative, no real solutions
-        if discriminant < 0.0 {
-            return Some(0);
-        } else if discriminant == 0.0 {
-            continue;
-        }
+
+        assert!(discriminant >= 0.0);
 
         let x1 = (-b + discriminant.sqrt()) / (2.0 * a);
         let x2 = (-b - discriminant.sqrt()) / (2.0 * a);
@@ -71,10 +67,8 @@ pub fn part_two(input: &str) -> Option<u32> {
     let b = time;
     let c = -distance;
     let discriminant = b * b - 4.0 * a * c;
-    // if discriminant is negative, no real solutions
-    if discriminant < 0.0 {
-        return Some(0);
-    }
+    
+    assert!(discriminant >= 0.0);
 
     let x1 = (-b + discriminant.sqrt()) / (2.0 * a);
     let x2 = (-b - discriminant.sqrt()) / (2.0 * a);

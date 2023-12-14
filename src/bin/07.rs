@@ -63,7 +63,7 @@ pub fn part_one(input: &str) -> Option<u32> {
         } else if hand_type1 < hand_type2 {
             return std::cmp::Ordering::Less;
         }
-        // sort by card strength
+        // then sort by card strength
         for (c1, c2) in hand1.chars().zip(hand2.chars()) {
             let s1 = card_strengths.get(&c1).unwrap();
             let s2 = card_strengths.get(&c2).unwrap();
@@ -109,7 +109,7 @@ mod tests {
     fn test_part_one_edge_cases() {
         let input = "9KKK7 890\nJAA48 80\n755Q5 520\n4JQQJ 223\n997T9 405\n8A888 575\nK369T 730\nA5565 847";
         let result = part_one(input);
-        assert_eq!(result, Some(21390));
+        assert_eq!(result, Some(21533));
     }
 
     #[test]

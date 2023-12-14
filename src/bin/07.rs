@@ -178,7 +178,6 @@ pub fn part_two(input: &str) -> Option<u32> {
             }
         }
         std::cmp::Ordering::Equal
-
     });
 
     Some(

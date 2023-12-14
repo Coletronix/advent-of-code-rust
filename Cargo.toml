@@ -29,3 +29,4 @@ tinyjson = "2.5.1"
 
 # Solution dependencies
 rayon = "1.8.0"
+graph = "0.3.1"

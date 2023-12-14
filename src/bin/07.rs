@@ -57,19 +57,17 @@ pub fn part_one(input: &str) -> Option<u32> {
     let mut hand_strengths = hand_types.collect::<Vec<(&str, u32, u32)>>();
     hand_strengths.sort_by(|(hand1, _, hand_type1), (hand2, _, hand_type2)| {
         // sort by hand type
-        if hand_type1 > hand_type2 {
-            return std::cmp::Ordering::Greater;
-        } else if hand_type1 < hand_type2 {
-            return std::cmp::Ordering::Less;
+        match hand_type1.cmp(hand_type2) {
+            std::cmp::Ordering::Equal => (),
+            others => return others,
         }
         // then sort by card strength
         for (c1, c2) in hand1.chars().zip(hand2.chars()) {
             let s1 = card_strengths.get(&c1).unwrap();
             let s2 = card_strengths.get(&c2).unwrap();
-            if s1 > s2 {
-                return std::cmp::Ordering::Greater;
-            } else if s1 < s2 {
-                return std::cmp::Ordering::Less;
+            match s1.cmp(s2) {
+                std::cmp::Ordering::Equal => (),
+                others => return others,
             }
         }
         std::cmp::Ordering::Equal
@@ -166,22 +164,21 @@ pub fn part_two(input: &str) -> Option<u32> {
     let mut hand_strengths = hand_types.collect::<Vec<(&str, u32, u32)>>();
     hand_strengths.sort_by(|(hand1, _, hand_type1), (hand2, _, hand_type2)| {
         // sort by hand type
-        if hand_type1 > hand_type2 {
-            return std::cmp::Ordering::Greater;
-        } else if hand_type1 < hand_type2 {
-            return std::cmp::Ordering::Less;
+        match hand_type1.cmp(hand_type2) {
+            std::cmp::Ordering::Equal => (),
+            others => return others,
         }
         // then sort by card strength
         for (c1, c2) in hand1.chars().zip(hand2.chars()) {
             let s1 = card_strengths.get(&c1).unwrap();
             let s2 = card_strengths.get(&c2).unwrap();
-            if s1 > s2 {
-                return std::cmp::Ordering::Greater;
-            } else if s1 < s2 {
-                return std::cmp::Ordering::Less;
+            match s1.cmp(s2) {
+                std::cmp::Ordering::Equal => (),
+                others => return others,
             }
         }
         std::cmp::Ordering::Equal
+
     });
 
     Some(

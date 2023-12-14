@@ -67,7 +67,7 @@ pub fn part_two(input: &str) -> Option<u32> {
     let b = time;
     let c = -distance;
     let discriminant = b * b - 4.0 * a * c;
-    
+
     assert!(discriminant >= 0.0);
 
     let x1 = (-b + discriminant.sqrt()) / (2.0 * a);

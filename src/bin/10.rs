@@ -122,8 +122,90 @@ pub fn part_one(input: &str) -> Option<u32> {
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    let _lines = input.lines().collect::<Vec<&str>>();
-    None
+    let lines = input.lines().collect::<Vec<&str>>();
+
+    // map of what direction you should check next when coming into a tile from a certain direction
+    let direction_map: HashMap<(char, (i32, i32)), (i32, i32)> = HashMap::from([
+        (('-', FROM_LEFT), TO_RIGHT),
+        (('-', FROM_RIGHT), TO_LEFT),
+        (('|', FROM_UP), TO_DOWN),
+        (('|', FROM_DOWN), TO_UP),
+        (('L', FROM_UP), TO_RIGHT),
+        (('L', FROM_RIGHT), TO_UP),
+        (('J', FROM_UP), TO_LEFT),
+        (('J', FROM_LEFT), TO_UP),
+        (('7', FROM_LEFT), TO_DOWN),
+        (('7', FROM_DOWN), TO_LEFT),
+        (('F', FROM_RIGHT), TO_DOWN),
+        (('F', FROM_DOWN), TO_RIGHT),
+        // entering the starting position from any direction should signify the end of traversal
+        (('S', FROM_LEFT), START),
+        (('S', FROM_RIGHT), START),
+        (('S', FROM_UP), START),
+        (('S', FROM_DOWN), START),
+    ]);
+
+    // start by finding the position of the S
+    let mut start_pos = find_char(lines.as_slice(), 'S').unwrap();
+
+    let mut start_dir = TO_LEFT; // chosen arbitrarily
+
+    // TODO: this could be made more efficient
+    // check up
+    if let Some(c) = get_char_ascii_grid(lines.as_slice(), (start_pos.0, start_pos.1 - 1)) {
+        if direction_map.contains_key(&(c, FROM_DOWN)) {
+            start_dir = TO_UP;
+        }
+    }
+    // check down
+    if let Some(c) = get_char_ascii_grid(lines.as_slice(), (start_pos.0, start_pos.1 + 1)) {
+        if direction_map.contains_key(&(c, FROM_UP)) {
+            start_dir = TO_DOWN;
+        }
+    }
+    // check right
+    if let Some(c) = get_char_ascii_grid(lines.as_slice(), (start_pos.0 + 1, start_pos.1)) {
+        if direction_map.contains_key(&(c, FROM_LEFT)) {
+            start_dir = TO_RIGHT;
+        }
+    }
+
+    start_pos.0 += start_dir.0;
+    start_pos.1 += start_dir.1;
+
+    let mut traverser = Traverser {
+        pos: start_pos,
+        to_dir: start_dir,
+    };
+
+    let mut path_length = 0;
+    while traverser.to_dir != START {
+        traverser.move_it(lines.as_slice(), &direction_map);
+        path_length += 1;
+    }
+
+    // count the number of dots that have an even number of intersections with a path to the left
+    let mut num_enclosed = 0;
+    for line in lines {
+        let mut inside_loop = false;
+        for c in line.chars() {
+            if c == '.' {
+                if inside_loop {
+                    num_enclosed += 1;
+                    print!("*");
+                } else {
+                    print!("^");
+                }
+            } else if c != '-' {
+                inside_loop = !inside_loop;
+                print!(".");
+            } else {
+                print!(".");
+            }
+        }
+        println!();
+    }
+    Some(num_enclosed)
 }
 
 #[cfg(test)]
@@ -137,8 +219,14 @@ mod tests {
     }
 
     #[test]
-    fn test_part_two() {
-        let result = part_two(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, None);
+    fn test_part_two_example_one() {
+        let result = part_two(&advent_of_code::template::read_file_part("examples", DAY, 21));
+        assert_eq!(result, Some(4));
+    }
+
+    #[test]
+    fn test_part_two_example_two() {
+        let result = part_two(&advent_of_code::template::read_file_part("examples", DAY, 22));
+        assert_eq!(result, Some(8));
     }
 }

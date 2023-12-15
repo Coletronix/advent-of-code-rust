@@ -14,10 +14,18 @@ pub fn part_one(input: &str) -> Option<i64> {
         let mut differences_vec = Vec::new();
         differences_vec.push(datapoints);
 
-        while !differences_vec.last().unwrap().iter().all(|&elem| elem == 0) {
-            let new_vec = differences_vec.last().unwrap().windows(2).map(|window| {
-                window[1] - window[0]
-            }).collect();
+        while !differences_vec
+            .last()
+            .unwrap()
+            .iter()
+            .all(|&elem| elem == 0)
+        {
+            let new_vec = differences_vec
+                .last()
+                .unwrap()
+                .windows(2)
+                .map(|window| window[1] - window[0])
+                .collect();
             differences_vec.push(new_vec);
         }
 
@@ -49,10 +57,18 @@ pub fn part_two(input: &str) -> Option<i64> {
         let mut differences_vec = Vec::new();
         differences_vec.push(datapoints);
 
-        while !differences_vec.last().unwrap().iter().all(|&elem| elem == 0) {
-            let new_vec = differences_vec.last().unwrap().windows(2).map(|window| {
-                window[1] - window[0]
-            }).collect();
+        while !differences_vec
+            .last()
+            .unwrap()
+            .iter()
+            .all(|&elem| elem == 0)
+        {
+            let new_vec = differences_vec
+                .last()
+                .unwrap()
+                .windows(2)
+                .map(|window| window[1] - window[0])
+                .collect();
             differences_vec.push(new_vec);
         }
 
@@ -69,7 +85,6 @@ pub fn part_two(input: &str) -> Option<i64> {
     });
 
     Some(predicted_values.sum())
-
 }
 
 #[cfg(test)]

@@ -93,25 +93,34 @@ pub fn part_two(input: &str) -> Option<u32> {
                 if chains_to_skip.len() == num_chains {
                     break 'done_with_loop;
                 }
-                continue
+                continue;
             }
             // have we visited this state before?
             if visited_map.contains_key(&(current_element, step_num as u32)) {
-                if !visited_map.get(&(current_element, step_num as u32)).unwrap().printed_before {
+                if !visited_map
+                    .get(&(current_element, step_num as u32))
+                    .unwrap()
+                    .printed_before
+                {
                     println!("found loop for search chain {} at state {} after {} steps at direction number {}", chain_num, current_element, num_steps, step_num);
-                    visited_map.entry((current_element, step_num as u32)).and_modify(|entry| {
-                        entry.printed_before = true;
-                        entry.length_of_loop = Some(num_steps - entry.num_steps_to);
-                        println!("Entry {:?}", entry);
-                    });
+                    visited_map
+                        .entry((current_element, step_num as u32))
+                        .and_modify(|entry| {
+                            entry.printed_before = true;
+                            entry.length_of_loop = Some(num_steps - entry.num_steps_to);
+                            println!("Entry {:?}", entry);
+                        });
                     chains_to_skip.push(chain_num);
                 }
             } else {
-                visited_map.insert((current_element, step_num as u32), NodeInformation {
-                    printed_before: false,
-                    length_of_loop: None, // not known yet until we get to it again
-                    num_steps_to: num_steps,
-                });
+                visited_map.insert(
+                    (current_element, step_num as u32),
+                    NodeInformation {
+                        printed_before: false,
+                        length_of_loop: None, // not known yet until we get to it again
+                        num_steps_to: num_steps,
+                    },
+                );
             }
 
             *current_element =

@@ -1,12 +1,11 @@
-use na::DMatrix;
-use nalgebra::{self as na, OMatrix, OVector, U2};
+use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 
 advent_of_code::solution!(9);
 
 pub fn part_one(input: &str) -> Option<i64> {
     let lines = input.lines().collect::<Vec<&str>>();
 
-    let predicted_values = lines.iter().map(|line| {
+    let predicted_values = lines.par_iter().map(|line| {
         let datapoints = line
             .split(' ')
             .map(|num| num.parse::<i64>().unwrap())
@@ -41,7 +40,7 @@ pub fn part_one(input: &str) -> Option<i64> {
 pub fn part_two(input: &str) -> Option<i64> {
     let lines = input.lines().collect::<Vec<&str>>();
 
-    let predicted_values = lines.iter().map(|line| {
+    let predicted_values = lines.par_iter().map(|line| {
         let datapoints = line
             .split(' ')
             .map(|num| num.parse::<i64>().unwrap())

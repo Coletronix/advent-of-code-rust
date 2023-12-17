@@ -1,8 +1,9 @@
 use primitive_types::U256;
+use rayon::prelude::*;
 
 advent_of_code::solution!(11);
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 struct Position {
     x: usize,
     y: usize,
@@ -29,6 +30,14 @@ fn compute_mask_range(start: usize, end: usize) -> U256 {
     mask_end ^ mask_start
 }
 
+fn min_max<T: Ord>(a: T, b: T) -> (T, T) {
+    if a < b {
+        (a, b)
+    } else {
+        (b, a)
+    }
+}
+
 pub fn part_one(input: &str) -> Option<u32> {
     let lines = input.lines().collect::<Vec<&str>>();
 
@@ -49,26 +58,32 @@ pub fn part_one(input: &str) -> Option<u32> {
     }
 
     // compute the manhattan distance between every pair of galaxies
-    let mut total_distance = 0;
-    for i in 0..galaxies.len() {
+    let total_distance: u32 = (0..galaxies.len()).into_par_iter()
+    .map(|i| {
+        let mut dist_sum = 0;
         for j in i + 1..galaxies.len() {
             let mut dist = (galaxies[i].x as i32 - galaxies[j].x as i32).abs()
                 + (galaxies[i].y as i32 - galaxies[j].y as i32).abs();
 
-            dist += (compute_mask_range(
-                std::cmp::min(galaxies[i].y, galaxies[j].y),
-                std::cmp::max(galaxies[i].y, galaxies[j].y),
-            ) & occupied_rows)
-                .count_ones() as i32;
-            dist += (compute_mask_range(
-                std::cmp::min(galaxies[i].x, galaxies[j].x),
-                std::cmp::max(galaxies[i].x, galaxies[j].x),
+            let (x_min, x_max) = min_max(galaxies[i].x, galaxies[j].x);
+            let (y_min, y_max) = min_max(galaxies[i].y, galaxies[j].y);
+            dist += ((compute_mask_range(
+                x_min,
+                x_max,
             ) & occupied_cols)
-                .count_ones() as i32;
+                .count_ones() as i32)
+                * 1;
+            dist += ((compute_mask_range(
+                y_min,
+                y_max,
+            ) & occupied_rows)
+                .count_ones() as i32)
+                * 1;
 
-            total_distance += dist as u32;
+            dist_sum += dist as u32;
         }
-    }
+        dist_sum
+    }).sum();
 
     Some(total_distance)
 }
@@ -93,28 +108,32 @@ pub fn part_two(input: &str) -> Option<u64> {
     }
 
     // compute the manhattan distance between every pair of galaxies
-    let mut total_distance = 0;
-    for i in 0..galaxies.len() {
+    let total_distance: u64 = (0..galaxies.len()).into_par_iter()
+    .map(|i| {
+        let mut dist_sum = 0;
         for j in i + 1..galaxies.len() {
             let mut dist = (galaxies[i].x as i64 - galaxies[j].x as i64).abs()
                 + (galaxies[i].y as i64 - galaxies[j].y as i64).abs();
 
+            let (x_min, x_max) = min_max(galaxies[i].x, galaxies[j].x);
+            let (y_min, y_max) = min_max(galaxies[i].y, galaxies[j].y);
             dist += ((compute_mask_range(
-                std::cmp::min(galaxies[i].y, galaxies[j].y),
-                std::cmp::max(galaxies[i].y, galaxies[j].y),
-            ) & occupied_rows)
-                .count_ones() as i64)
-                * 999999;
-            dist += ((compute_mask_range(
-                std::cmp::min(galaxies[i].x, galaxies[j].x),
-                std::cmp::max(galaxies[i].x, galaxies[j].x),
+                x_min,
+                x_max,
             ) & occupied_cols)
                 .count_ones() as i64)
                 * 999999;
+            dist += ((compute_mask_range(
+                y_min,
+                y_max,
+            ) & occupied_rows)
+                .count_ones() as i64)
+                * 999999;
 
-            total_distance += dist as u64;
+            dist_sum += dist as u64;
         }
-    }
+        dist_sum
+    }).sum();
 
     Some(total_distance)
 }
@@ -132,6 +151,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let result = part_two(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, None);
+        assert_eq!(result, Some(82000210));
     }
 }

@@ -58,38 +58,34 @@ pub fn part_one(input: &str) -> Option<u32> {
     }
 
     // compute the manhattan distance between every pair of galaxies
-    let total_distance: u32 = (0..galaxies.len()).into_par_iter()
-    .map(|i| {
-        let mut dist_sum = 0;
-        for j in i + 1..galaxies.len() {
-            let mut dist = (galaxies[i].x as i32 - galaxies[j].x as i32).abs()
-                + (galaxies[i].y as i32 - galaxies[j].y as i32).abs();
+    let total_distance: u32 = (0..galaxies.len())
+        .into_par_iter()
+        .map(|i| {
+            let mut dist_sum = 0;
+            for j in i + 1..galaxies.len() {
+                let (x_min, x_max) = min_max(galaxies[i].x, galaxies[j].x);
+                let (y_min, y_max) = min_max(galaxies[i].y, galaxies[j].y);
 
-            let (x_min, x_max) = min_max(galaxies[i].x, galaxies[j].x);
-            let (y_min, y_max) = min_max(galaxies[i].y, galaxies[j].y);
-            dist += ((compute_mask_range(
-                x_min,
-                x_max,
-            ) & occupied_cols)
-                .count_ones() as i32)
-                * 1;
-            dist += ((compute_mask_range(
-                y_min,
-                y_max,
-            ) & occupied_rows)
-                .count_ones() as i32)
-                * 1;
+                let mut dist = (x_max - x_min) as i32 + (y_max - y_min) as i32;
 
-            dist_sum += dist as u32;
-        }
-        dist_sum
-    }).sum();
+                dist +=
+                    ((compute_mask_range(x_min, x_max) & occupied_cols).count_ones() as i32) * 1;
+                dist +=
+                    ((compute_mask_range(y_min, y_max) & occupied_rows).count_ones() as i32) * 1;
+
+                dist_sum += dist as u32;
+            }
+            dist_sum
+        })
+        .sum();
 
     Some(total_distance)
 }
 
 pub fn part_two(input: &str) -> Option<u64> {
     let lines = input.lines().collect::<Vec<&str>>();
+
+    println!("Line len: {}", lines[0].len());
 
     // bitset representing which rows and columns are occupied
     let mut occupied_rows = (U256::from(1) << lines.len()) - 1;
@@ -108,32 +104,26 @@ pub fn part_two(input: &str) -> Option<u64> {
     }
 
     // compute the manhattan distance between every pair of galaxies
-    let total_distance: u64 = (0..galaxies.len()).into_par_iter()
-    .map(|i| {
-        let mut dist_sum = 0;
-        for j in i + 1..galaxies.len() {
-            let mut dist = (galaxies[i].x as i64 - galaxies[j].x as i64).abs()
-                + (galaxies[i].y as i64 - galaxies[j].y as i64).abs();
+    let total_distance: u64 = (0..galaxies.len())
+        .into_par_iter()
+        .map(|i| {
+            let mut dist_sum = 0;
+            for j in i + 1..galaxies.len() {
+                let (x_min, x_max) = min_max(galaxies[i].x, galaxies[j].x);
+                let (y_min, y_max) = min_max(galaxies[i].y, galaxies[j].y);
 
-            let (x_min, x_max) = min_max(galaxies[i].x, galaxies[j].x);
-            let (y_min, y_max) = min_max(galaxies[i].y, galaxies[j].y);
-            dist += ((compute_mask_range(
-                x_min,
-                x_max,
-            ) & occupied_cols)
-                .count_ones() as i64)
-                * 999999;
-            dist += ((compute_mask_range(
-                y_min,
-                y_max,
-            ) & occupied_rows)
-                .count_ones() as i64)
-                * 999999;
+                let mut dist = (x_max - x_min) as i64 + (y_max - y_min) as i64;
 
-            dist_sum += dist as u64;
-        }
-        dist_sum
-    }).sum();
+                dist += ((compute_mask_range(x_min, x_max) & occupied_cols).count_ones() as i64)
+                    * 999999;
+                dist += ((compute_mask_range(y_min, y_max) & occupied_rows).count_ones() as i64)
+                    * 999999;
+
+                dist_sum += dist as u64;
+            }
+            dist_sum
+        })
+        .sum();
 
     Some(total_distance)
 }
